@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.TypeDef;
@@ -26,10 +23,12 @@ public class Airport {
 
     @NotNull
     @Column(name = "airport_name")
-    private String name;
+    @Convert(converter = LocalizedStringAttributeConverter.class)
+    private LocalizedString name;
 
     @NotNull
-    private String city;
+    @Convert(converter = LocalizedStringAttributeConverter.class)
+    private LocalizedString city;
 
     @NotNull
     @Type(type="point")
