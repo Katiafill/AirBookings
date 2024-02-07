@@ -38,6 +38,7 @@ class AircraftRepositoryTest {
         List<Aircraft> aircrafts = (List<Aircraft>) repository.findAll();
         assertNotNull(aircrafts);
         assertFalse(aircrafts.isEmpty());
+        aircrafts.forEach(System.out::println);
     }
 
 }

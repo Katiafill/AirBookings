@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,4 +30,8 @@ public class Aircraft {
     @NotNull
     @Min(1)
     private Integer range;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "aircraft_code")
+    private List<Seat> seats;
 }
