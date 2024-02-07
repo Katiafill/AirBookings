@@ -12,14 +12,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.TypeDef;
-import org.postgresql.geometric.PGpoint;
 
 @Entity
 @Table(name = "airports_data")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TypeDef(name = "pgpoint", typeClass = PGpointType.class)
+@TypeDef(name = "point", typeClass = PointType.class)
 public class Airport {
     @Id
     @Column(name = "airport_code", length = 3)
@@ -33,8 +32,8 @@ public class Airport {
     private String city;
 
     @NotNull
-    @Type(type="pgpoint")
-    private PGpoint coordinates;
+    @Type(type="point")
+    private Point coordinates;
 
     @NotNull
     private String timezone;

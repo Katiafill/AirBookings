@@ -10,9 +10,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Objects;
 
-public class PGpointType implements UserType {
+/* Пользовательский тип для преобразования
+* PostgresSQL point type в PGpoint, а его в
+* уже в свой Point.
+*/
+public class PointType implements UserType {
     @Override
     public int[] sqlTypes() {
         return new int[]
@@ -22,13 +25,17 @@ public class PGpointType implements UserType {
     }
 
     @Override
-    public Class<PGpoint> returnedClass() {
-        return PGpoint.class;
+    public Class<Point> returnedClass() {
+        return Point.class;
     }
 
     @Override
     public boolean equals(Object x, Object y) throws HibernateException {
-        return Objects.equals(x, y);
+        if (x == null && y == null)
+            return true;
+        else if (x == null || y == null)
+            return false;
+        return x.equals(y);
     }
 
     @Override
@@ -43,16 +50,20 @@ public class PGpointType implements UserType {
 
         PGpoint value = (PGpoint) resultSet.getObject(names[0]);
 
-        return value;
+        if (value == null) {
+            return null;
+        } else {
+            return new Point(value.x, value.y);
+        }
     }
 
 
     @Override
     public void nullSafeSet(PreparedStatement statement, Object value, int index, SharedSessionContractImplementor sharedSessionContractImplementor) throws SQLException {
         if (value == null) {
-            statement.setNull(index, Types.OTHER);
+            statement.setNull(index, java.sql.Types.OTHER);
         } else {
-            statement.setObject(index, value, Types.OTHER);
+            statement.setObject(index, new PGpoint(((Point) value).getX(), ((Point) value).getY()));
         }
     }
 
@@ -61,16 +72,13 @@ public class PGpointType implements UserType {
         if (obj == null)
             return null;
 
-        try {
-            return ((PGpoint) obj).clone();
-        } catch (CloneNotSupportedException e) {
-            throw new IllegalArgumentException(e);
-        }
+        Point point = (Point) obj;
+        return new Point(point.getX(), point.getY());
     }
 
     @Override
     public boolean isMutable() {
-        return Boolean.FALSE;
+        return false;
     }
 
     @Override
