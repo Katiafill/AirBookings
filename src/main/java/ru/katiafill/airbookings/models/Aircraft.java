@@ -20,8 +20,7 @@ import javax.validation.constraints.Size;
 public class Aircraft {
     // Aircraft code, IATA
     @Id
-    @Column(name = "aircraft_code")
-    @Size(min = 1, max = 3)
+    @Column(name = "aircraft_code", length = 3)
     private String code;
 
     // Aircraft model
