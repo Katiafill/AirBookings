@@ -31,7 +31,7 @@ public class Aircraft {
     @Min(1)
     private Integer range;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "aircraft_code")
-    private List<Seat> seats;
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "aircraft_code")
+//    private List<Seat> seats;
 }
