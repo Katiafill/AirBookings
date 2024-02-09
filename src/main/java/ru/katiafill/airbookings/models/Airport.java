@@ -10,6 +10,9 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.TypeDef;
 
+import java.time.ZoneId;
+import java.util.TimeZone;
+
 @Entity
 @Table(name = "airports_data")
 @Data
@@ -18,22 +21,21 @@ import org.hibernate.annotations.TypeDef;
 @TypeDef(name = "point", typeClass = PointType.class)
 public class Airport {
     @Id
-    @Column(name = "airport_code", length = 3)
+    @Column(name = "airport_code", length = 3, nullable = false)
     private String code;
 
-    @NotNull
-    @Column(name = "airport_name")
+    @Column(name = "airport_name", nullable = false)
     @Convert(converter = LocalizedStringAttributeConverter.class)
     private LocalizedString name;
 
-    @NotNull
+    @Column(nullable = false)
     @Convert(converter = LocalizedStringAttributeConverter.class)
     private LocalizedString city;
 
-    @NotNull
+    @Column(nullable = false)
     @Type(type="point")
     private Point coordinates;
 
-    @NotNull
+    @Column(nullable = false)
     private String timezone;
 }
