@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import ru.katiafill.airbookings.models.Flight;
+import ru.katiafill.airbookings.models.Route;
 
 import java.util.List;
 
@@ -22,5 +23,11 @@ class FlightsRepositoryTest {
         assertNotNull(flights);
         assertFalse(flights.isEmpty());
         flights.subList(0, 10).forEach(System.out::println);
+    }
+
+    @Test
+    public void findAllRoutes() {
+        List<Route> routes = repository.findAllRoutes();
+        routes.forEach(System.out::println);
     }
 }
