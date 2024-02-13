@@ -25,11 +25,9 @@ public class Airport {
     private String code;
 
     @Column(name = "airport_name", nullable = false)
-    @Convert(converter = LocalizedStringAttributeConverter.class)
     private LocalizedString name;
 
     @Column(nullable = false)
-    @Convert(converter = LocalizedStringAttributeConverter.class)
     private LocalizedString city;
 
     @Column(nullable = false)

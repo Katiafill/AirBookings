@@ -27,7 +27,4 @@ public class Ticket {
 
     @Column(name = "contact_data")
     private String contactData;
-
-//    @Column(name = "book_ref")
-//    private String bookRef;
 }

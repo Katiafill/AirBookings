@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import ru.katiafill.airbookings.models.Aircraft;
 import ru.katiafill.airbookings.models.Airport;
+import ru.katiafill.airbookings.models.LocalizedString;
 
 import java.time.ZoneId;
 import java.util.List;
@@ -38,7 +39,7 @@ class AirportRepositoryTest {
         List<Airport> airports = (List<Airport>) repository.findAll();
         assertNotNull(airports);
         assertFalse(airports.isEmpty());
-        airports.forEach(System.out::println);
+        //airports.forEach(System.out::println);
     }
 
     @Test
@@ -72,5 +73,12 @@ class AirportRepositoryTest {
         assertTrue(airport.isPresent());
 
         assertEquals(airport.get(), air);
+    }
+
+    @Test
+    void findAllCities() {
+        List<LocalizedString> cities = repository.findAllCities();
+        assertNotNull(cities);
+        assertFalse(cities.isEmpty());
     }
 }
