@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import ru.katiafill.airbookings.models.Aircraft;
 
 public interface AircraftRepository extends JpaRepository<Aircraft, String> {
+
 }

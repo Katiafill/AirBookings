@@ -2,7 +2,6 @@ package ru.katiafill.airbookings.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class AircraftServiceTest {
@@ -29,7 +29,6 @@ class AircraftServiceTest {
 
     private Aircraft aircraft;
     private Seat economySeat, comfortSeat, businessSeat;
-    private List<Seat> seats;
     private String aircraftCode;
 
     @BeforeEach
@@ -39,20 +38,19 @@ class AircraftServiceTest {
         economySeat = new Seat(aircraftCode, "A1", FareConditions.Economy);
         comfortSeat = new Seat(aircraftCode, "B1", FareConditions.Comfort);
         businessSeat = new Seat(aircraftCode, "C1", FareConditions.Business);
-        seats = List.of(economySeat, comfortSeat, businessSeat);
 
         aircraft = Aircraft.builder()
                 .code(aircraftCode)
                 .model(new LocalizedString("Sample", "Пример"))
                 .range(1000)
-                .seats(seats)
+                .seats(List.of(economySeat, comfortSeat, businessSeat))
                 .build();
 
     }
 
     @Test
     void findAll() {
-        Mockito.when(repository.findAll()).thenReturn(List.of(aircraft));
+        when(repository.findAll()).thenReturn(List.of(aircraft));
 
         List<Aircraft> aircrafts = service.findAll();
 
@@ -63,7 +61,7 @@ class AircraftServiceTest {
 
     @Test
     void findById() {
-        Mockito.when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
+        when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
 
         Optional<Aircraft> optionalAircraft = service.findById(aircraftCode);
 
@@ -72,8 +70,20 @@ class AircraftServiceTest {
     }
 
     @Test
+    void save() {
+        service.save(aircraft);
+        verify(repository, times(1)).save(aircraft);
+    }
+
+    @Test
+    void delete() {
+        service.delete(aircraftCode);
+        verify(repository, times(1)).deleteById(aircraftCode);
+    }
+
+    @Test
     void getSeatsByAircraftCodeAndFareCondition() {
-        Mockito.when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
+        when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
 
         testSeatsByFareCondition(FareConditions.Economy, economySeat);
         testSeatsByFareCondition(FareConditions.Comfort, comfortSeat);
@@ -90,7 +100,7 @@ class AircraftServiceTest {
 
     @Test
     void getSeatsForAircraft() {
-        Mockito.when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
+        when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
         Map<FareConditions, List<String>> actualSeats = Map.of(
                 FareConditions.Economy, List.of(economySeat.getSeatNo()),
                 FareConditions.Comfort, List.of(comfortSeat.getSeatNo()),
@@ -101,11 +111,4 @@ class AircraftServiceTest {
         assertEquals(seats, actualSeats);
     }
 
-    @Test
-    void findAllDepartureAirportsByAircraftCode() {
-    }
-
-    @Test
-    void findAllArrivalAirportsByAircraftCode() {
-    }
 }

@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 public class AircraftServiceImpl implements AircraftService {
 
     private final AircraftRepository aircraftRepository;
-    private final RoutesRepository routesRepository;
 
     @Override
     public List<Aircraft> findAll() {
@@ -28,6 +27,16 @@ public class AircraftServiceImpl implements AircraftService {
     @Override
     public Optional<Aircraft> findById(String id) {
         return aircraftRepository.findById(id);
+    }
+
+    @Override
+    public Aircraft save(Aircraft aircraft) {
+        return aircraftRepository.save(aircraft);
+    }
+
+    @Override
+    public void delete(String aircraftCode) {
+        aircraftRepository.deleteById(aircraftCode);
     }
 
     @Override
@@ -60,23 +69,4 @@ public class AircraftServiceImpl implements AircraftService {
                         Collectors.mapping(Seat::getSeatNo, Collectors.toList())));
     }
 
-
-    @Override
-    public List<Airport> findAllDepartureAirportsByAircraftCode(String aircraftCode) {
-        return getRoutesStreamByAircraftCode(aircraftCode)
-                .map(Route::getDepartureAirport)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Airport> findAllArrivalAirportsByAircraftCode(String aircraftCode) {
-        return getRoutesStreamByAircraftCode(aircraftCode)
-                .map(Route::getArrivalAirport)
-                .collect(Collectors.toList());
-    }
-
-    private Stream<Route> getRoutesStreamByAircraftCode(String aircraftCode) {
-        return routesRepository.findAllByAircraftCode(aircraftCode)
-                .stream();
-    }
 }

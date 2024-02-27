@@ -10,8 +10,9 @@ public interface AircraftService {
     List<Aircraft> findAll();
     Optional<Aircraft> findById(String id);
     List<Seat> getSeatsByAircraftCodeAndFareCondition(String aircraftCode, FareConditions conditions);
-    /* Получить места для лайнера, сгруппированные по класса обслуживания.*/
+    /* Получить места для лайнера, сгруппированные по классам обслуживания.*/
     Map<FareConditions, List<String>> getSeatsForAircraft(String aircraftCode);
-    List<Airport> findAllDepartureAirportsByAircraftCode(String aircraftCode);
-    List<Airport> findAllArrivalAirportsByAircraftCode(String aircraftCode);
+
+    Aircraft save(Aircraft aircraft);
+    void delete(String aircraftCode);
 }
