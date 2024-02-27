@@ -12,8 +12,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.katiafill.airbookings.models.Aircraft;
+import ru.katiafill.airbookings.models.FareConditions;
+import ru.katiafill.airbookings.models.LocalizedString;
+import ru.katiafill.airbookings.models.Seat;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,12 +25,22 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 class AircraftRepositoryTest {
     private static final Logger logger = LoggerFactory.getLogger(AircraftRepositoryTest.class);
+    @Autowired
+    private TestEntityManager entityManager;
 
     @Autowired
     private AircraftRepository repository;
 
+    private Aircraft aircraft;
+
     @BeforeEach
     void setUp() {
+        aircraft = Aircraft.builder()
+                .code("SMP")
+                .model(new LocalizedString("Sample", "Пример"))
+                .range(1000)
+                .build();
+        entityManager.persist(aircraft);
     }
 
     @AfterEach
@@ -34,11 +48,10 @@ class AircraftRepositoryTest {
     }
 
     @Test
-    void findAll() {
-        List<Aircraft> aircrafts = (List<Aircraft>) repository.findAll();
-        assertNotNull(aircrafts);
-        assertFalse(aircrafts.isEmpty());
-        aircrafts.forEach(System.out::println);
+    void findById() {
+        Optional<Aircraft> aircraft = repository.findById("SMP");
+        assertFalse(aircraft.isEmpty());
+        assertEquals(aircraft.get(), this.aircraft);
     }
 
 }
