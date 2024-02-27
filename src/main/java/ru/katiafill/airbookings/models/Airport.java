@@ -1,6 +1,7 @@
 package ru.katiafill.airbookings.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -18,6 +19,7 @@ import java.util.TimeZone;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @TypeDef(name = "point", typeClass = PointType.class)
 public class Airport {
     @Id
@@ -25,9 +27,11 @@ public class Airport {
     private String code;
 
     @Column(name = "airport_name", nullable = false)
+    @Type(type = "LocalizedStringType")
     private LocalizedString name;
 
     @Column(nullable = false)
+    @Type(type = "LocalizedStringType")
     private LocalizedString city;
 
     @Column(nullable = false)

@@ -1,9 +1,7 @@
 package ru.katiafill.airbookings.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -16,14 +14,16 @@ import java.util.List;
 @Table(name = "aircrafts_data")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Aircraft {
     // Aircraft code, IATA
     @Id
-    @Column(name = "aircraft_code", length = 3)
+    @Column(name = "aircraft_code", length = 3, nullable = false)
     private String code;
 
     // Aircraft model
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "jsonb")
+    @Type(type = "LocalizedStringType")
     private LocalizedString model;
 
     // Maximal flying distance, km

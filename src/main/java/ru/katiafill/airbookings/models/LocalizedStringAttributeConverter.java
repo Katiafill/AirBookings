@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
-@Converter(autoApply = true)
+//@Converter(autoApply = true)
 public class LocalizedStringAttributeConverter implements AttributeConverter<LocalizedString, String> {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = LoggerFactory.getLogger(LocalizedStringAttributeConverter.class);
