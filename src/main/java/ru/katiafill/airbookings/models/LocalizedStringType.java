@@ -6,6 +6,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,7 +44,7 @@ public class LocalizedStringType implements UserType {
         }
         try {
             final ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(cellContent.getBytes("UTF-8"), returnedClass());
+            return mapper.readValue(cellContent.getBytes(StandardCharsets.UTF_8), returnedClass());
         } catch (final Exception ex) {
             throw new RuntimeException("Failed to convert String to LocalizedString: " + ex.getMessage(), ex);
         }

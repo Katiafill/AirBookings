@@ -1,5 +1,6 @@
 package ru.katiafill.airbookings.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
 
-public interface AirportRepository extends CrudRepository<Airport, String> {
+public interface AirportRepository extends JpaRepository<Airport, String> {
     @Query(value = "SELECT * FROM airports_data WHERE city->>'en' = :city OR city->>'ru' = :city", nativeQuery = true)
     public List<Airport> findAllByCity(@Param("city") String city);
     public List<Airport> findAllByTimezone(String timezone);

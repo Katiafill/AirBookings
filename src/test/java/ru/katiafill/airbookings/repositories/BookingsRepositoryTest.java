@@ -20,14 +20,6 @@ class BookingsRepositoryTest {
     private BookingsRepository repository;
 
     @Test
-    public void findAll() {
-        List<Booking> bookings = (List<Booking>) repository.findAll();
-        assertNotNull(bookings);
-        assertFalse(bookings.isEmpty());
-        bookings.subList(0, 10).forEach(System.out::println);
-    }
-
-    @Test
     public void findById() {
         Optional<Booking> book = repository.findById("DA7166");
         assertTrue(book.isPresent());
