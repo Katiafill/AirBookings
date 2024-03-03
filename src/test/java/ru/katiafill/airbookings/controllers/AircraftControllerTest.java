@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.katiafill.airbookings.exception.DatabaseException;
 import ru.katiafill.airbookings.models.Aircraft;
 import ru.katiafill.airbookings.models.FareConditions;
 import ru.katiafill.airbookings.models.LocalizedString;
@@ -107,5 +108,16 @@ class AircraftControllerTest {
     void deleteAircraft() throws Exception {
         mvc.perform(delete("/aircraft/" + aircraft.getCode()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteNoAircraft() throws Exception {
+        doThrow(new DatabaseException("Delete Error")).when(service).delete(aircraft.getCode());
+
+        mvc.perform(
+                delete("/aircraft/" + aircraft.getCode()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Delete Error"));
+
     }
 }

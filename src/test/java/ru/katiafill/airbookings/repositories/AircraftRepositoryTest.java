@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import ru.katiafill.airbookings.models.Aircraft;
 import ru.katiafill.airbookings.models.FareConditions;
 import ru.katiafill.airbookings.models.LocalizedString;
@@ -54,4 +56,26 @@ class AircraftRepositoryTest {
         assertEquals(aircraft.get(), this.aircraft);
     }
 
+    @Test
+    void save() {
+        entityManager.clear();
+        aircraft = Aircraft.builder()
+                .code("SMP")
+                .model(new LocalizedString("Sample", "Пример"))
+                .range(1000)
+                .seats(List.of(new Seat("SMP","A1", FareConditions.Economy)))
+                .build();
+
+        repository.save(aircraft);
+        repository.findAll().forEach(a -> logger.info(a.toString()));
+    }
+
+    @Test
+    void deleteNotPresentId() {
+        try {
+            repository.deleteById("SMP");
+        } catch (DataAccessException ex) {
+            logger.error(ex.getLocalizedMessage());
+        }
+    }
 }

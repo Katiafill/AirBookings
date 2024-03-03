@@ -70,6 +70,14 @@ class AircraftServiceTest {
     }
 
     @Test
+    void findById_invalidId() {
+        when(repository.findById(aircraftCode)).thenReturn(Optional.empty());
+
+        Optional<Aircraft> optionalAircraft = service.findById(aircraftCode);
+        assertTrue(optionalAircraft.isEmpty());
+    }
+
+    @Test
     void save() {
         service.save(aircraft);
         verify(repository, times(1)).save(aircraft);
@@ -79,6 +87,12 @@ class AircraftServiceTest {
     void delete() {
         service.delete(aircraftCode);
         verify(repository, times(1)).deleteById(aircraftCode);
+    }
+
+    @Test
+    void delete_null() {
+        service.delete(null);
+        verify(repository, times(1)).deleteById(null);
     }
 
     @Test
