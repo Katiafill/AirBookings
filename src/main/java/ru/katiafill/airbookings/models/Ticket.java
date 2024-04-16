@@ -34,4 +34,7 @@ public class Ticket {
     @Type(type = "jsonb")
     @Column(name = "contact_data", columnDefinition = "jsonb")
     private String contactData;
+
+    @Column(name = "book_ref", length = 6, nullable = false)
+    private String bookNo;
 }
