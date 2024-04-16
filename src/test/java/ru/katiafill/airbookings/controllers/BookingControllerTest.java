@@ -59,7 +59,6 @@ class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.content", hasSize(1)))
                 .andExpect(jsonPath("$.content[0].bookNo").value(booking.getBookNo()))
