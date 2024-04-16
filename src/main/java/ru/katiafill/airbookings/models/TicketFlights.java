@@ -1,6 +1,7 @@
 package ru.katiafill.airbookings.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @IdClass(TicketPK.class)
 public class TicketFlights {
     @Id
@@ -28,4 +30,11 @@ public class TicketFlights {
 
     @Column(name = "amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal amount;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "ticket_no"),
+            @JoinColumn(name = "flight_id")
+    })
+    private BoardingPass boardingPass;
 }
