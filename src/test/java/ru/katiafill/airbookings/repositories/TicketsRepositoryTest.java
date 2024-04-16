@@ -55,10 +55,12 @@ class TicketsRepositoryTest {
                 .seatNo("28C")
                 .build();
 
-        ticketFlight.setBoardingPass(boardingPass);
 
+        ticketFlight.setBoardingPass(boardingPass);
+        ticket.setFlights(List.of(ticketFlight));
+
+        //entityManager.persist(ticketFlight);
         entityManager.persist(ticket);
-        entityManager.persist(ticketFlight);
     }
 
     @Test
@@ -67,6 +69,7 @@ class TicketsRepositoryTest {
         assertEquals(tickets.size(), 1);
         Ticket ticket1 = tickets.get(0);
         assertEquals(ticket1, ticket);
+        log.info(ticket1.toString());
     }
 
     @Test

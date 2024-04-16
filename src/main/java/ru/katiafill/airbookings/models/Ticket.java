@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tickets")
@@ -37,4 +35,8 @@ public class Ticket {
 
     @Column(name = "book_ref", length = 6, nullable = false)
     private String bookNo;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ticket_no")
+    private List<TicketFlights> flights;
 }
