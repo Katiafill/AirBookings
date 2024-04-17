@@ -34,7 +34,4 @@ public class Aircraft {
     @Column(nullable = false)
     @Min(1)
     private Integer range;
-
-    @Transient
-    private final List<Seat> seats = new ArrayList<>();
 }

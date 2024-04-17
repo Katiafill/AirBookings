@@ -96,14 +96,14 @@ class AircraftServiceTest {
 
     @Test
     void getSeatsByAircraftCodeAndFareCondition() {
-        when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
-
         testSeatsByFareCondition(FareConditions.Economy, economySeat);
         testSeatsByFareCondition(FareConditions.Comfort, comfortSeat);
         testSeatsByFareCondition(FareConditions.Business, businessSeat);
     }
 
     private void testSeatsByFareCondition(FareConditions conditions, Seat actual) {
+        when(repository.findSeatsByFareConditions(any(), any())).thenReturn(List.of(actual));
+
         List<Seat> seatList = service.getSeatsByAircraftCodeAndFareCondition(aircraftCode, conditions);
 
         assertNotNull(seatList);
@@ -113,7 +113,8 @@ class AircraftServiceTest {
 
     @Test
     void getSeatsForAircraft() {
-        when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
+        when(repository.findAllSeats(any())).thenReturn(List.of(economySeat, comfortSeat, businessSeat));
+
         Map<FareConditions, List<String>> actualSeats = Map.of(
                 FareConditions.Economy, List.of(economySeat.getSeatNo()),
                 FareConditions.Comfort, List.of(comfortSeat.getSeatNo()),

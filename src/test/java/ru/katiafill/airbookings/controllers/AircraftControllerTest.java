@@ -115,7 +115,7 @@ class AircraftControllerTest {
         mvc.perform(
                 delete("/aircraft/" + aircraft.getCode()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Delete Error"));
+                .andExpect(jsonPath("$.error").value("Delete Error"));
 
     }
 }

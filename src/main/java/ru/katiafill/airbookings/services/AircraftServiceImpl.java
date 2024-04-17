@@ -68,32 +68,14 @@ public class AircraftServiceImpl implements AircraftService {
 
     @Override
     public List<Seat> getSeatsByAircraftCodeAndFareCondition(String aircraftCode, FareConditions conditions) {
-        Optional<Aircraft> optionalAircraft = findById(aircraftCode);
-
-        if (optionalAircraft.isEmpty()) {
-            log.info("Did not find aircraft with id: " + aircraftCode);
-            return List.of();
-        }
-
-        Aircraft aircraft = optionalAircraft.get();
-        return aircraft.getSeats()
-                .stream()
-                .filter(s -> s.getFareConditions() == conditions)
-                .collect(Collectors.toList());
+        return aircraftRepository.findSeatsByFareConditions(aircraftCode, conditions);
     }
 
     @Override
     public Map<FareConditions, List<String>> getSeatsForAircraft(String aircraftCode) {
-        Optional<Aircraft> optionalAircraft = findById(aircraftCode);
+        List<Seat> seats = aircraftRepository.findAllSeats(aircraftCode);
 
-        if (optionalAircraft.isEmpty()) {
-            log.info("Did not find aircraft with id: " + aircraftCode);
-            return Map.of();
-        }
-
-        Aircraft aircraft = optionalAircraft.get();
-        return aircraft.getSeats()
-                .stream()
+        return seats.stream()
                 .collect(Collectors.groupingBy(Seat::getFareConditions,
                         Collectors.mapping(Seat::getSeatNo, Collectors.toList())));
     }
