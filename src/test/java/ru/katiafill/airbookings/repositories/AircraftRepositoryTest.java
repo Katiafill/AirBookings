@@ -66,6 +66,19 @@ class AircraftRepositoryTest {
     }
 
     @Test
+    void findSeatsByFareConditions() {
+        List<Seat> seats = repository.findSeatsByFareConditions(aircraft.getCode(), FareConditions.Economy);
+        assertEquals(seats.size(), 1);
+        assertEquals(seats.get(0), seat);
+
+        seats = repository.findSeatsByFareConditions(aircraft.getCode(), FareConditions.Comfort);
+        assertTrue(seats.isEmpty());
+
+        seats = repository.findSeatsByFareConditions(aircraft.getCode(), FareConditions.Business);
+        assertTrue(seats.isEmpty());
+    }
+
+    @Test
     void deleteNotPresentId() {
         try {
             repository.deleteById("SMP");
