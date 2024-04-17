@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,8 +17,7 @@ import ru.katiafill.airbookings.models.Seat;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @DataJpaTest
@@ -33,10 +30,11 @@ class AircraftRepositoryTest {
     private AircraftRepository repository;
 
     private Aircraft aircraft;
+    private Seat seat;
 
     @BeforeEach
     void setUp() {
-        Seat seat = new Seat("SMP", "A1", FareConditions.Economy);
+        seat = new Seat("SMP", "A1", FareConditions.Economy);
 
         aircraft = Aircraft.builder()
                 .code("SMP")
@@ -46,6 +44,7 @@ class AircraftRepositoryTest {
 
         entityManager.persist(seat);
         entityManager.persist(aircraft);
+        entityManager.flush();
     }
 
     @AfterEach
@@ -54,10 +53,16 @@ class AircraftRepositoryTest {
 
     @Test
     void findByModel() {
-        List<Aircraft> aircrafts = repository.findAllByModel(aircraft.getModel().getRu());
-        assertEquals(aircrafts.size(), 1);
-        Aircraft aircraft1 = aircrafts.get(0);
-        assertEquals(aircraft1, aircraft);
+        Optional<Aircraft> optionalAircraft = repository.findByModel(aircraft.getModel().getRu());
+        assertTrue(optionalAircraft.isPresent());
+        assertEquals(optionalAircraft.get(), aircraft);
+    }
+
+    @Test
+    void findAllSeats() {
+        List<Seat> seats = repository.findAllSeats(aircraft.getCode());
+        assertEquals(seats.size(), 1);
+        assertEquals(seats.get(0), seat);
     }
 
     @Test
