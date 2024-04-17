@@ -1,5 +1,6 @@
 package ru.katiafill.airbookings.repositories;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +22,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@Slf4j
 @DataJpaTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 class AircraftRepositoryTest {
-    private static final Logger logger = LoggerFactory.getLogger(AircraftRepositoryTest.class);
     @Autowired
     private TestEntityManager entityManager;
 
@@ -35,11 +36,15 @@ class AircraftRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        Seat seat = new Seat("SMP", "A1", FareConditions.Economy);
+
         aircraft = Aircraft.builder()
                 .code("SMP")
                 .model(new LocalizedString("Sample", "Пример"))
                 .range(1000)
                 .build();
+
+        entityManager.persist(seat);
         entityManager.persist(aircraft);
     }
 
@@ -48,24 +53,11 @@ class AircraftRepositoryTest {
     }
 
     @Test
-    void findById() {
-        Optional<Aircraft> aircraft = repository.findById("SMP");
-        assertFalse(aircraft.isEmpty());
-        assertEquals(aircraft.get(), this.aircraft);
-    }
-
-    @Test
-    void save() {
-        entityManager.clear();
-        aircraft = Aircraft.builder()
-                .code("SMP")
-                .model(new LocalizedString("Sample", "Пример"))
-                .range(1000)
-                .seats(List.of(new Seat("SMP","A1", FareConditions.Economy)))
-                .build();
-
-        repository.save(aircraft);
-        repository.findAll().forEach(a -> logger.info(a.toString()));
+    void findByModel() {
+        List<Aircraft> aircrafts = repository.findAllByModel(aircraft.getModel().getRu());
+        assertEquals(aircrafts.size(), 1);
+        Aircraft aircraft1 = aircrafts.get(0);
+        assertEquals(aircraft1, aircraft);
     }
 
     @Test
@@ -73,7 +65,7 @@ class AircraftRepositoryTest {
         try {
             repository.deleteById("SMP");
         } catch (DataAccessException ex) {
-            logger.error(ex.getLocalizedMessage());
+            log.error(ex.getLocalizedMessage());
         }
     }
 }

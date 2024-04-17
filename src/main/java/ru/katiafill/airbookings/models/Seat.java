@@ -1,8 +1,6 @@
 package ru.katiafill.airbookings.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,13 +20,12 @@ public class Seat {
     @Column(name = "seat_no", length = 4)
     private String seatNo;
 
-    @Column(name = "fare_conditions", length = 10)
+    @Column(name = "fare_conditions", length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private FareConditions fareConditions;
 
     @Data
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class SeatPK implements Serializable {
         private String aircraftCode;
         private String seatNo;

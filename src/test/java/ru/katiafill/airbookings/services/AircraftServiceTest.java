@@ -43,7 +43,6 @@ class AircraftServiceTest {
                 .code(aircraftCode)
                 .model(new LocalizedString("Sample", "Пример"))
                 .range(1000)
-                .seats(List.of(economySeat, comfortSeat, businessSeat))
                 .build();
 
     }
