@@ -1,5 +1,7 @@
 services:
   app:
+    env_file:
+      - .env
     image: 'airbookings:latest'
     build:
       context: .
@@ -14,6 +16,8 @@ services:
       - "8080:8080"
 
   db:
+    env_file:
+      - .env
     image: 'postgres:16.2'
     container_name: db
     environment:
