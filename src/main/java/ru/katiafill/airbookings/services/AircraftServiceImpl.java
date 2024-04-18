@@ -27,7 +27,6 @@ public class AircraftServiceImpl implements AircraftService {
         try {
             return aircraftRepository.findAll();
         } catch (DataAccessException ex) {
-            log.error("Failed find all aircrafts", ex);
             throw new DatabaseException("Exception occurred when find all aircrafts", ex);
         }
     }
@@ -37,7 +36,6 @@ public class AircraftServiceImpl implements AircraftService {
         try {
             return aircraftRepository.findById(id);
         } catch (DataAccessException ex) {
-            log.error("Failed find aircraft by id: " + id, ex);
             throw new DatabaseException("Exception occurred when find aircraft by id: " + id, ex);
         }
 
@@ -47,10 +45,9 @@ public class AircraftServiceImpl implements AircraftService {
     public Aircraft save(Aircraft aircraft) throws DatabaseException {
         try {
             Aircraft saved = aircraftRepository.save(aircraft);
-            log.info("Success saved aircraft with id: " + aircraft.getCode());
+            log.info("Success saved aircraft with id: {}", aircraft.getCode());
             return saved;
         } catch (DataAccessException ex) {
-            log.error("Failed save aircraft: " + aircraft, ex);
             throw new DatabaseException("Exception occurred when save aircraft", ex);
         }
     }
@@ -59,9 +56,8 @@ public class AircraftServiceImpl implements AircraftService {
     public void delete(String aircraftCode) throws DatabaseException {
         try {
             aircraftRepository.deleteById(aircraftCode);
-            log.info("Success deleted aircraft by id: " + aircraftCode);
+            log.info("Success deleted aircraft by id: {}", aircraftCode);
         } catch (DataAccessException ex) {
-            log.error("Failed delete aircraft by id: " + aircraftCode, ex);
             throw new DatabaseException("Exception occurred when deleting an aircraft by id: " + aircraftCode, ex);
         }
     }
