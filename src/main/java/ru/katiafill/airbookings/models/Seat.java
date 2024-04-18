@@ -1,5 +1,6 @@
 package ru.katiafill.airbookings.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 public class Seat {
     @Id
     @Column(name = "aircraft_code", length = 3)
+    @JsonIgnore
     private String aircraftCode;
 
     @Id
