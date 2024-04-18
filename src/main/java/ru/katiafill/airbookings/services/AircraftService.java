@@ -14,7 +14,8 @@ public interface AircraftService {
     Aircraft save(@NotNull Aircraft aircraft) throws DatabaseException;
     void delete(@NotNull String aircraftCode) throws DatabaseException;
 
-    List<Seat> getSeatsByAircraftCodeAndFareCondition(@NotNull String aircraftCode, @NotNull FareConditions conditions);
+    List<Seat> getAllSeats(@NotNull String aircraftCode) throws DatabaseException;
+    List<Seat> getSeatsByFareConditions(@NotNull String aircraftCode, @NotNull FareConditions conditions) throws DatabaseException;
     /* Получить места для лайнера, сгруппированные по классам обслуживания.*/
-    Map<FareConditions, List<String>> getSeatsForAircraft(@NotNull String aircraftCode);
+    Map<FareConditions, List<String>> getGroupedSeats(@NotNull String aircraftCode) throws DatabaseException;
 }

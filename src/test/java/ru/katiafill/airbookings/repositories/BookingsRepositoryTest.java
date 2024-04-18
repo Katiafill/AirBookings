@@ -19,11 +19,4 @@ class BookingsRepositoryTest {
     @Autowired
     private BookingsRepository repository;
 
-    @Test
-    public void findById() {
-        Optional<Booking> book = repository.findById("DA7166");
-        assertTrue(book.isPresent());
-        assertNotNull(book.get());
-        System.out.println(book.get().toString());
-    }
 }

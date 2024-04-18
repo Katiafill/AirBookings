@@ -43,7 +43,6 @@ class AircraftServiceTest {
                 .code(aircraftCode)
                 .model(new LocalizedString("Sample", "Пример"))
                 .range(1000)
-                .seats(List.of(economySeat, comfortSeat, businessSeat))
                 .build();
 
     }
@@ -97,15 +96,15 @@ class AircraftServiceTest {
 
     @Test
     void getSeatsByAircraftCodeAndFareCondition() {
-        when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
-
         testSeatsByFareCondition(FareConditions.Economy, economySeat);
         testSeatsByFareCondition(FareConditions.Comfort, comfortSeat);
         testSeatsByFareCondition(FareConditions.Business, businessSeat);
     }
 
     private void testSeatsByFareCondition(FareConditions conditions, Seat actual) {
-        List<Seat> seatList = service.getSeatsByAircraftCodeAndFareCondition(aircraftCode, conditions);
+        when(repository.findSeatsByFareConditions(any(), any())).thenReturn(List.of(actual));
+
+        List<Seat> seatList = service.getSeatsByFareConditions(aircraftCode, conditions);
 
         assertNotNull(seatList);
         assertEquals(seatList.size(), 1);
@@ -114,14 +113,15 @@ class AircraftServiceTest {
 
     @Test
     void getSeatsForAircraft() {
-        when(repository.findById(aircraftCode)).thenReturn(Optional.of(aircraft));
+        when(repository.findAllSeats(any())).thenReturn(List.of(economySeat, comfortSeat, businessSeat));
+
         Map<FareConditions, List<String>> actualSeats = Map.of(
                 FareConditions.Economy, List.of(economySeat.getSeatNo()),
                 FareConditions.Comfort, List.of(comfortSeat.getSeatNo()),
                 FareConditions.Business, List.of(businessSeat.getSeatNo())
         );
 
-        Map<FareConditions, List<String>> seats = service.getSeatsForAircraft(aircraftCode);
+        Map<FareConditions, List<String>> seats = service.getGroupedSeats(aircraftCode);
         assertEquals(seats, actualSeats);
     }
 

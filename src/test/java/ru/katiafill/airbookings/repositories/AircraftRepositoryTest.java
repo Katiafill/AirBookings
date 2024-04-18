@@ -1,15 +1,13 @@
 package ru.katiafill.airbookings.repositories;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.dao.DataAccessException;
 import ru.katiafill.airbookings.models.Aircraft;
 import ru.katiafill.airbookings.models.FareConditions;
 import ru.katiafill.airbookings.models.LocalizedString;
@@ -18,13 +16,12 @@ import ru.katiafill.airbookings.models.Seat;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 @DataJpaTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 class AircraftRepositoryTest {
-    private static final Logger logger = LoggerFactory.getLogger(AircraftRepositoryTest.class);
     @Autowired
     private TestEntityManager entityManager;
 
@@ -32,15 +29,21 @@ class AircraftRepositoryTest {
     private AircraftRepository repository;
 
     private Aircraft aircraft;
+    private Seat seat;
 
     @BeforeEach
     void setUp() {
+        seat = new Seat("SMP", "A1", FareConditions.Economy);
+
         aircraft = Aircraft.builder()
                 .code("SMP")
                 .model(new LocalizedString("Sample", "Пример"))
                 .range(1000)
                 .build();
+
+        entityManager.persist(seat);
         entityManager.persist(aircraft);
+        entityManager.flush();
     }
 
     @AfterEach
@@ -48,32 +51,29 @@ class AircraftRepositoryTest {
     }
 
     @Test
-    void findById() {
-        Optional<Aircraft> aircraft = repository.findById("SMP");
-        assertFalse(aircraft.isEmpty());
-        assertEquals(aircraft.get(), this.aircraft);
+    void findByModel() {
+        Optional<Aircraft> optionalAircraft = repository.findByModel(aircraft.getModel().getRu());
+        assertTrue(optionalAircraft.isPresent());
+        assertEquals(optionalAircraft.get(), aircraft);
     }
 
     @Test
-    void save() {
-        entityManager.clear();
-        aircraft = Aircraft.builder()
-                .code("SMP")
-                .model(new LocalizedString("Sample", "Пример"))
-                .range(1000)
-                .seats(List.of(new Seat("SMP","A1", FareConditions.Economy)))
-                .build();
-
-        repository.save(aircraft);
-        repository.findAll().forEach(a -> logger.info(a.toString()));
+    void findAllSeats() {
+        List<Seat> seats = repository.findAllSeats(aircraft.getCode());
+        assertEquals(seats.size(), 1);
+        assertEquals(seats.get(0), seat);
     }
 
     @Test
-    void deleteNotPresentId() {
-        try {
-            repository.deleteById("SMP");
-        } catch (DataAccessException ex) {
-            logger.error(ex.getLocalizedMessage());
-        }
+    void findSeatsByFareConditions() {
+        List<Seat> seats = repository.findSeatsByFareConditions(aircraft.getCode(), FareConditions.Economy);
+        assertEquals(seats.size(), 1);
+        assertEquals(seats.get(0), seat);
+
+        seats = repository.findSeatsByFareConditions(aircraft.getCode(), FareConditions.Comfort);
+        assertTrue(seats.isEmpty());
+
+        seats = repository.findSeatsByFareConditions(aircraft.getCode(), FareConditions.Business);
+        assertTrue(seats.isEmpty());
     }
 }

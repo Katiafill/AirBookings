@@ -27,7 +27,6 @@ public class AircraftServiceImpl implements AircraftService {
         try {
             return aircraftRepository.findAll();
         } catch (DataAccessException ex) {
-            log.error("Failed find all aircrafts", ex);
             throw new DatabaseException("Exception occurred when find all aircrafts", ex);
         }
     }
@@ -37,7 +36,6 @@ public class AircraftServiceImpl implements AircraftService {
         try {
             return aircraftRepository.findById(id);
         } catch (DataAccessException ex) {
-            log.error("Failed find aircraft by id: " + id, ex);
             throw new DatabaseException("Exception occurred when find aircraft by id: " + id, ex);
         }
 
@@ -47,10 +45,9 @@ public class AircraftServiceImpl implements AircraftService {
     public Aircraft save(Aircraft aircraft) throws DatabaseException {
         try {
             Aircraft saved = aircraftRepository.save(aircraft);
-            log.info("Success saved aircraft with id: " + aircraft.getCode());
+            log.info("Success saved aircraft with id: {}", aircraft.getCode());
             return saved;
         } catch (DataAccessException ex) {
-            log.error("Failed save aircraft: " + aircraft, ex);
             throw new DatabaseException("Exception occurred when save aircraft", ex);
         }
     }
@@ -59,41 +56,35 @@ public class AircraftServiceImpl implements AircraftService {
     public void delete(String aircraftCode) throws DatabaseException {
         try {
             aircraftRepository.deleteById(aircraftCode);
-            log.info("Success deleted aircraft by id: " + aircraftCode);
+            log.info("Success deleted aircraft by id: {}", aircraftCode);
         } catch (DataAccessException ex) {
-            log.error("Failed delete aircraft by id: " + aircraftCode, ex);
             throw new DatabaseException("Exception occurred when deleting an aircraft by id: " + aircraftCode, ex);
         }
     }
 
     @Override
-    public List<Seat> getSeatsByAircraftCodeAndFareCondition(String aircraftCode, FareConditions conditions) {
-        Optional<Aircraft> optionalAircraft = findById(aircraftCode);
-
-        if (optionalAircraft.isEmpty()) {
-            log.info("Did not find aircraft with id: " + aircraftCode);
-            return List.of();
+    public List<Seat> getAllSeats(String aircraftCode) throws DatabaseException {
+        try {
+            return aircraftRepository.findAllSeats(aircraftCode);
+        } catch (DataAccessException ex) {
+            throw new DatabaseException("Exception occurred when find all seats for aircraft: " + aircraftCode, ex);
         }
-
-        Aircraft aircraft = optionalAircraft.get();
-        return aircraft.getSeats()
-                .stream()
-                .filter(s -> s.getFareConditions() == conditions)
-                .collect(Collectors.toList());
     }
 
     @Override
-    public Map<FareConditions, List<String>> getSeatsForAircraft(String aircraftCode) {
-        Optional<Aircraft> optionalAircraft = findById(aircraftCode);
-
-        if (optionalAircraft.isEmpty()) {
-            log.info("Did not find aircraft with id: " + aircraftCode);
-            return Map.of();
+    public List<Seat> getSeatsByFareConditions(String aircraftCode, FareConditions conditions) throws DatabaseException {
+        try {
+            return aircraftRepository.findSeatsByFareConditions(aircraftCode, conditions);
+        } catch (DataAccessException ex) {
+            throw new DatabaseException("Exception occurred when find all seats for aircraft: " + aircraftCode + ", conditions: " + conditions, ex);
         }
+    }
 
-        Aircraft aircraft = optionalAircraft.get();
-        return aircraft.getSeats()
-                .stream()
+    @Override
+    public Map<FareConditions, List<String>> getGroupedSeats(String aircraftCode) throws DatabaseException {
+        List<Seat> seats = getAllSeats(aircraftCode);
+
+        return seats.stream()
                 .collect(Collectors.groupingBy(Seat::getFareConditions,
                         Collectors.mapping(Seat::getSeatNo, Collectors.toList())));
     }

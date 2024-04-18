@@ -1,11 +1,14 @@
 package ru.katiafill.airbookings.models;
 
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Aircraft {
     // Aircraft code, IATA
     @Id
@@ -22,17 +26,12 @@ public class Aircraft {
     private String code;
 
     // Aircraft model
-    @Column(nullable = false, columnDefinition = "jsonb")
-    @Type(type = "LocalizedStringType")
+    @Column(nullable = false, columnDefinition = "jsonb", unique = true)
+    @Type(type = "jsonb")
     private LocalizedString model;
 
     // Maximal flying distance, km
     @Column(nullable = false)
     @Min(1)
     private Integer range;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "aircraft_code")
-    @ToString.Exclude
-    private List<Seat> seats;
 }

@@ -1,0 +1,30 @@
+services:
+  app:
+    env_file:
+      - .env
+    image: 'airbookings:latest'
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+
+  db:
+    env_file:
+      - .env
+    image: 'postgres:16.2'
+    container_name: db
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+        - ${VOLUME_PATH}:/var/lib/postgresql/data
+        - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+        - "5432:5432"
