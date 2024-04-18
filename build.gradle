@@ -35,10 +35,6 @@ dependencies {
     implementation "io.hypersistence:hypersistence-utils-hibernate-55:3.7.3"
 }
 
-tasks.named('bootBuildImage') {
-    builder = 'paketobuildpacks/builder-jammy-base:latest'
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }
