@@ -66,14 +66,14 @@ class AirportRepositoryTest {
     void findAllByCity() {
         List<Airport> airports = repository.findAllByCity("Novosibirsk2");
         assertNotNull(airports);
-        assertEquals(1, airports.size());
+        assertEquals(airports.size(), 1);
         Airport airport = airports.get(0);
 
         airports = repository.findAllByCity("Новосибирск2");
         assertNotNull(airports);
-        assertEquals(1, airports.size());
+        assertEquals(airports.size(), 1);
 
-        assertEquals(airport, airports.get(0));
+        assertEquals(airports.get(0), airport);
     }
 
     @Test
