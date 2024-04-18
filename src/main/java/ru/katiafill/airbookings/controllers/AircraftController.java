@@ -15,7 +15,7 @@ import java.util.Optional;
 public class AircraftController {
     private final AircraftService service;
 
-    @GetMapping("/aircrafts")
+    @GetMapping("/aircraft")
     public List<Aircraft> getAircrafts() {
         return service.findAll();
     }
@@ -25,10 +25,14 @@ public class AircraftController {
         return service.findById(id);
     }
 
-    @GetMapping("/aircraft/{id}/seats/{conditions}")
+    @GetMapping("/aircraft/{id}/seats")
     public List<Seat> getSeatsByAircraft(@PathVariable String id,
-                                         @PathVariable FareConditions conditions) {
-        return service.getSeatsByAircraftCodeAndFareCondition(id, conditions);
+                                         @RequestParam(required = false) FareConditions conditions) {
+        if (conditions == null) {
+            return service.getAllSeats(id);
+        } else {
+            return service.getSeatsByFareConditions(id, conditions);
+        }
     }
 
     @PostMapping("/aircraft")
@@ -38,7 +42,6 @@ public class AircraftController {
     }
 
     @DeleteMapping("/aircraft/{id}")
-    @ResponseBody
     public void deleteAircraft(@PathVariable String id) {
         service.delete(id);
     }

@@ -63,13 +63,26 @@ public class AircraftServiceImpl implements AircraftService {
     }
 
     @Override
-    public List<Seat> getSeatsByAircraftCodeAndFareCondition(String aircraftCode, FareConditions conditions) {
-        return aircraftRepository.findSeatsByFareConditions(aircraftCode, conditions);
+    public List<Seat> getAllSeats(String aircraftCode) throws DatabaseException {
+        try {
+            return aircraftRepository.findAllSeats(aircraftCode);
+        } catch (DataAccessException ex) {
+            throw new DatabaseException("Exception occurred when find all seats for aircraft: " + aircraftCode, ex);
+        }
     }
 
     @Override
-    public Map<FareConditions, List<String>> getSeatsForAircraft(String aircraftCode) {
-        List<Seat> seats = aircraftRepository.findAllSeats(aircraftCode);
+    public List<Seat> getSeatsByFareConditions(String aircraftCode, FareConditions conditions) throws DatabaseException {
+        try {
+            return aircraftRepository.findSeatsByFareConditions(aircraftCode, conditions);
+        } catch (DataAccessException ex) {
+            throw new DatabaseException("Exception occurred when find all seats for aircraft: " + aircraftCode + ", conditions: " + conditions, ex);
+        }
+    }
+
+    @Override
+    public Map<FareConditions, List<String>> getGroupedSeats(String aircraftCode) throws DatabaseException {
+        List<Seat> seats = getAllSeats(aircraftCode);
 
         return seats.stream()
                 .collect(Collectors.groupingBy(Seat::getFareConditions,

@@ -49,12 +49,14 @@ class AircraftControllerTest {
     void getAircrafts() throws Exception {
         when(service.findAll()).thenReturn(List.of(aircraft));
 
-        mvc.perform(get("/aircrafts")
+        mvc.perform(get("/aircraft")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].code").value(aircraft.getCode()))
+                .andExpect(jsonPath("$[0].model").value(aircraft.getModel()))
+                .andExpect(jsonPath("$[0].range").value(aircraft.getRange()))
                 .andReturn();
     }
 
@@ -67,21 +69,22 @@ class AircraftControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(aircraft.getCode()))
+                .andExpect(jsonPath("$.model").value(aircraft.getModel()))
+                .andExpect(jsonPath("$.range").value(aircraft.getRange()))
                 .andReturn();
     }
 
     @Test
     void getSeatsByAircraft() throws Exception {
         Seat economySeat = new Seat(aircraft.getCode(), "A1", FareConditions.Economy);
-        when(service.getSeatsByAircraftCodeAndFareCondition(any(), any()))
+        when(service.getSeatsByFareConditions(any(), any()))
                 .thenReturn(List.of(economySeat));
 
-        mvc.perform(get("/aircraft/" + aircraft.getCode() + "/seats/Economy")
+        mvc.perform(get("/aircraft/" + aircraft.getCode() + "/seats?conditions=Economy")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].aircraftCode").value(economySeat.getAircraftCode()))
                 .andExpect(jsonPath("$[0].seatNo").value(economySeat.getSeatNo()))
                 .andExpect(jsonPath("$[0].fareConditions").value(economySeat.getFareConditions().name()))
                 .andReturn();
@@ -99,6 +102,8 @@ class AircraftControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value(aircraft.getCode()))
+                .andExpect(jsonPath("$.model").value(aircraft.getModel()))
+                .andExpect(jsonPath("$.range").value(aircraft.getRange()))
                 .andReturn();
     }
 

@@ -104,7 +104,7 @@ class AircraftServiceTest {
     private void testSeatsByFareCondition(FareConditions conditions, Seat actual) {
         when(repository.findSeatsByFareConditions(any(), any())).thenReturn(List.of(actual));
 
-        List<Seat> seatList = service.getSeatsByAircraftCodeAndFareCondition(aircraftCode, conditions);
+        List<Seat> seatList = service.getSeatsByFareConditions(aircraftCode, conditions);
 
         assertNotNull(seatList);
         assertEquals(seatList.size(), 1);
@@ -121,7 +121,7 @@ class AircraftServiceTest {
                 FareConditions.Business, List.of(businessSeat.getSeatNo())
         );
 
-        Map<FareConditions, List<String>> seats = service.getSeatsForAircraft(aircraftCode);
+        Map<FareConditions, List<String>> seats = service.getGroupedSeats(aircraftCode);
         assertEquals(seats, actualSeats);
     }
 

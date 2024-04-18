@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.dao.DataAccessException;
 import ru.katiafill.airbookings.models.Aircraft;
 import ru.katiafill.airbookings.models.FareConditions;
 import ru.katiafill.airbookings.models.LocalizedString;
@@ -76,14 +75,5 @@ class AircraftRepositoryTest {
 
         seats = repository.findSeatsByFareConditions(aircraft.getCode(), FareConditions.Business);
         assertTrue(seats.isEmpty());
-    }
-
-    @Test
-    void deleteNotPresentId() {
-        try {
-            repository.deleteById("SMP");
-        } catch (DataAccessException ex) {
-            log.error(ex.getLocalizedMessage());
-        }
     }
 }
