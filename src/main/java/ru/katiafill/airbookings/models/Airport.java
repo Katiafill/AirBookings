@@ -1,5 +1,6 @@
 package ru.katiafill.airbookings.models;
 
+import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,12 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.TypeDef;
-
-import java.time.ZoneId;
-import java.util.TimeZone;
 
 @Entity
 @Table(name = "airports_data")
@@ -20,6 +17,7 @@ import java.util.TimeZone;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @TypeDef(name = "point", typeClass = PointType.class)
 public class Airport {
     @Id
@@ -27,11 +25,11 @@ public class Airport {
     private String code;
 
     @Column(name = "airport_name", nullable = false)
-    @Type(type = "LocalizedStringType")
+    @Type(type = "jsonb")
     private LocalizedString name;
 
     @Column(nullable = false)
-    @Type(type = "LocalizedStringType")
+    @Type(type = "jsonb")
     private LocalizedString city;
 
     @Column(nullable = false)
